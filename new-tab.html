@@ -16,24 +16,19 @@
       .card-wrap {
         width: 6rem;
         text-align: center;
+        display: inline-block;
       }
     </style>
   </head>
   <body>
-    <div class="container-md">
+    <div class="container-md mt-3">
       <div class="row">
         <div class="col-md">
         </div>
         <div class="col-md-8">
-          <div class='mb-3'>
-            <div class='card-wrap'>
-              <div class="card text-white bg-secondary mb-1 card-thumb">
-                <a href='https://github.com/' title="GitHub">GH</a>
-              </div>
-              GitHub
-            </div>
+          <div class='mb-3' data-cards>
           </div>
-          <form class='form-inline'>
+          <form class='form-inline' data-form>
             <div class='form-row align-items-center'>
               <div class='col-auto'>
                 <div class='input-group mb-2'>
@@ -52,6 +47,7 @@
                 </div>
               </div>
             </div>
+            <input type='submit' class='sr-only' />
           </form>
         </div>
         <div class="col-md">
@@ -60,5 +56,73 @@
     </div>
 	  <script type='text/javascript' src='https://unpkg.com/jquery@3.5.1/dist/jquery.min.js'></script>
 	  <script type='text/javascript' src='https://unpkg.com/bootstrap@4.5.3/dist/js/bootstrap.min.js'></script>
+    <script>
+      var $form, $sfInput
+      $form = $('[data-form]')
+      $sfInput = $('#sf-input')
+      $pdssInput = $('#pdss-input')
+      $form.on('submit', function (evt) {
+        evt.preventDefault()
+        var val
+        val = $sfInput.val()
+        if (val) {
+          window.location.href = 'https://premieredigital.atlassian.net/browse/SF-' + val
+          return
+        }
+        val = $pdssInput.val()
+        if (val) {
+          window.location.href = 'https://premieredigital.atlassian.net/browse/PDSS-' + val
+          return
+        }
+      })
+
+      var data, tmpl, html, obj, keys, key, i, j, $cards
+      data = [
+        {
+          title: 'GitHub',
+          slug: 'GH',
+          url: 'https://github.com/'
+        },
+        {
+          title: 'Jira',
+          slug: 'JR',
+          url: 'https://premieredigital.atlassian.net/secure/RapidBoard.jspa?rapidView=65&projectKey=SF'
+        },
+        {
+          title: 'SF local',
+          slug: 'SF',
+          url: 'http://localhost:5000/'
+        },
+        {
+          title: 'SF staging',
+          slug: 'SF',
+          url: 'https://staging.pdsf.app/'
+        },
+        {
+          title: 'SF prod',
+          slug: 'SF',
+          url: 'https://storefront.premieredigital.com/'
+        }
+      ]
+      tmpl = [
+        '<div class="card-wrap mr-3">',
+        '  <div class="card text-white bg-secondary mb-1 card-thumb">',
+        '    <a href="{url}" title="{title}">{slug}</a>',
+        '  </div>',
+        '  {title}',
+        '</div>'
+      ].join('\n')
+      $cards = $('[data-cards]')
+      for (i = 0; i < data.length; i += 1) {
+        obj = data[i]
+        keys = Object.keys(obj)
+        html = tmpl
+        for (j = 0; j < keys.length; j += 1) {
+          key = keys[j]
+          html = html.replace(RegExp('{' + key + '}', 'gi'), obj[key])
+        }
+        $cards.append($(html))
+      }
+    </script>
   </body>
 </html>
